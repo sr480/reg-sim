@@ -1,20 +1,87 @@
-# Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+# Симулятор регистратора
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+## Работа симулятора
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+Запуск 
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+    npm start
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+Данные последовательно выводятся из файла `data.json`
+
+Симулятор работает по адресу `localhost:3000/getcurrent`
+
+## Пример получения данных
+
+
+
+```js
+var getCurrentUrl = 'http://localhost:3000/getcurrent';
+var current_data = {};
+
+function updateCurrent() {
+  function onDataReceived(current_text) {
+    let rows = current_text.split('\r\n');
+    let cols = rows[0].split('|');
+
+    current_data.ts = parseInt(cols[0].substr(3));
+
+    current_data.T = parseInt(cols[1].substr(2));
+
+    current_data.A1 = parseInt(cols[2].substr(3)) / 1000.0;
+    current_data.H1 = parseInt(cols[3].substr(3)) / 1000.0;
+    current_data.L1 = parseInt(cols[4].substr(3)) / 1000.0;
+    current_data.S1 = parseInt(cols[5].substr(3)) / 1000.0;
+    current_data.M1 = parseInt(cols[6].substr(3)) / 1000.0;
+    current_data.N1 = parseInt(cols[7].substr(3)) / 1000.0;
+    current_data.F1 = parseInt(cols[8].substr(3)) / 1000.0;
+
+    current_data.D1_1 = cols[9].substr(5, 1);
+    current_data.D1_2 = cols[10].substr(5, 1);
+    current_data.D1_3 = cols[11].substr(5, 1);
+
+    current_data.A2 = parseInt(cols[12].substr(3)) / 1000.0;
+    current_data.H2 = parseInt(cols[13].substr(3)) / 1000.0;
+    current_data.L2 = parseInt(cols[14].substr(3)) / 1000.0;
+    current_data.S2 = parseInt(cols[15].substr(3)) / 1000.0;
+    current_data.M2 = parseInt(cols[16].substr(3)) / 1000.0;
+    current_data.N2 = parseInt(cols[17].substr(3)) / 1000.0;
+    current_data.F2 = parseInt(cols[18].substr(3)) / 1000.0;
+
+    current_data.D2_1 = cols[19].substr(5, 1);
+    current_data.D2_2 = cols[20].substr(5, 1);
+    current_data.D2_3 = cols[21].substr(5, 1);
+
+    current_data.A3 = parseInt(cols[22].substr(3)) / 1000.0;
+    current_data.H3 = parseInt(cols[23].substr(3)) / 1000.0;
+    current_data.L3 = parseInt(cols[24].substr(3)) / 1000.0;
+    current_data.S3 = parseInt(cols[25].substr(3)) / 1000.0;
+    current_data.M3 = parseInt(cols[26].substr(3)) / 1000.0;
+    current_data.N3 = parseInt(cols[27].substr(3)) / 1000.0;
+    current_data.F3 = parseInt(cols[28].substr(3)) / 1000.0;
+
+    current_data.D3_1 = cols[29].substr(5, 1);
+    current_data.D3_2 = cols[30].substr(5, 1);
+    current_data.D3_3 = cols[31].substr(5, 1);
+
+    document.getElementById('result').innerHTML = JSON.stringify(current_data);
+  }
+  fetch(getCurrentUrl, {
+    method: 'GET',
+    mode: 'cors'
+  }).then(
+    function (response) {
+      response.text().then(onDataReceived);
+    },
+    function (error) {
+      document.getElementById('result').innerHTML = 'Ошибка загрузки: ' + error;
+    }
+  );
+}
+
+
+document.getElementById('load').addEventListener('click', 
+  function() {
+    updateCurrent();
+  }
+)
+```
